@@ -1,0 +1,14 @@
+E:\PSP\Encriptar\Encriptado\bin\Debug\net6.0\Encriptado.exe
+E:\PSP\Encriptar\Encriptado\bin\Debug\net6.0\Encriptado.deps.json
+E:\PSP\Encriptar\Encriptado\bin\Debug\net6.0\Encriptado.runtimeconfig.json
+E:\PSP\Encriptar\Encriptado\bin\Debug\net6.0\Encriptado.dll
+E:\PSP\Encriptar\Encriptado\bin\Debug\net6.0\Encriptado.pdb
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.GeneratedMSBuildEditorConfig.editorconfig
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.AssemblyInfoInputs.cache
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.AssemblyInfo.cs
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.csproj.CoreCompileInputs.cache
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.dll
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\refint\Encriptado.dll
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.pdb
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\Encriptado.genruntimeconfig.cache
+E:\PSP\Encriptar\Encriptado\obj\Debug\net6.0\ref\Encriptado.dll
