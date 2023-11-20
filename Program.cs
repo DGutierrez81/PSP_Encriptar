@@ -1,10 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿
+// See https://aka.ms/new-console-template for more information
 using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Threading;
 
 class Program
 {
@@ -13,6 +15,7 @@ class Program
         string archivo = "passwords.txt";
         List<string> listaContraseñas = new List<string>();
         string contra = "";
+        
 
         try
         {
@@ -27,6 +30,8 @@ class Program
             {
                 listaContraseñas.Add(linea);
             }
+           
+            Console.WriteLine(listaContraseñas.Count);
 
             if(listaContraseñas.Count > 0)
             {
@@ -44,19 +49,57 @@ class Program
             }
             else {
                 Console.WriteLine("El archivo está vacio."); 
-            }    
+            }
+
+            int division = listaContraseñas.Count / 10;
+
+            Thread[] threads = new Thread[10];
+            for (int i = 0; i < 10; i++)
+            {
+                int inicio = i * division;
+                threads[i] = new Thread(() => ComprobarContrasenia(inicio, division, contra, listaContraseñas));
+                threads[i].Start();
+            }
+
+            /*
+            int parte2 = division * 2;
+            int parte3 = division * 3;
+            int parte4 = division * 4;
+            int parte5 = division * 5;
+            int parte6 = division * 6;
+            int parte7 = division * 7;
+            int parte8 = division * 8;
+            int parte9 = division * 9;
+
+            Thread t1 = new Thread(() => ComprobarContrasenia(0, division, contra, listaContraseñas));
+            t1.Start();
+            Thread t2 = new Thread(() => ComprobarContrasenia(division, division, contra, listaContraseñas));
+            t2.Start();
+            Thread t3 = new Thread(() => ComprobarContrasenia(parte2, division, contra, listaContraseñas));
+            t3.Start();
+            Thread t4 = new Thread(() => ComprobarContrasenia(parte3, division, contra, listaContraseñas));
+            t4.Start();
+            Thread t5 = new Thread(() => ComprobarContrasenia(parte4, division, contra, listaContraseñas));
+            t5.Start();
+            Thread t6 = new Thread(() => ComprobarContrasenia(parte5, division, contra, listaContraseñas));
+            t6.Start();
+            Thread t7 = new Thread(() => ComprobarContrasenia(parte6, division, contra, listaContraseñas));
+            t7.Start();
+            Thread t8 = new Thread(() => ComprobarContrasenia(parte7, division, contra, listaContraseñas));
+            t8.Start();
+            Thread t9 = new Thread(() => ComprobarContrasenia(parte8, division, contra, listaContraseñas));
+            t9.Start();
+            Thread t10 = new Thread(() => ComprobarContrasenia(parte9, division, contra, listaContraseñas));
+            t10.Start();
+            */
 
         }
-
         catch (IOException ex)
         {
             Console.WriteLine($"Error al leer el archivo: {ex.Message}");
         }
+
         Console.ReadLine(); // Para mantener la consola abierta
-
-        ComprobarContrasenia(contra, listaContraseñas);
-
-
     }
 
 
@@ -79,54 +122,34 @@ class Program
         }
     }
 
-    static void ComprobarContrasenia(string contrase, List<string> listaContraseñas)
+
+    static void ComprobarContrasenia(int inicio, int final, string contrase, List<string> listaContraseñas)
 
     {
-
+        Stopwatch stopwatch = new Stopwatch();
         List<string> listaHashesSHA256 = new List<string>();
 
+        stopwatch.Start();
         using (SHA256 sha256 = SHA256.Create())
         {
-            foreach (string texto in listaContraseñas)
+            foreach (string texto in listaContraseñas.GetRange(inicio, final))
             {
-                // Convertimos el texto a bytes
-                byte[] textoBytes = Encoding.UTF8.GetBytes(texto);
+                String nuevaEncriptada = EncriptarContraseña(texto);
 
-                // Calculamos el hash SHA-256
-                byte[] hashBytes = sha256.ComputeHash(textoBytes);
-
-                // Convertimos el hash a una representación hexadecimal
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
+                if (nuevaEncriptada == contrase)
                 {
-                    sb.Append(hashBytes[i].ToString("x2")); // "x2" para formato hexadecimal
+                    stopwatch.Stop();
+                    Console.WriteLine("La contraseña es: " + texto);
+                    break;
                 }
-
-                listaHashesSHA256.Add(sb.ToString());
             }
+
         }
 
-        for(int i = 0; i<listaHashesSHA256.Count; i++)
-        {
-            if (listaHashesSHA256[i] == contrase)
-            {
-                Console.WriteLine("La contraseña es: " + listaContraseñas[i]);
-            }
-        }
-        /*
-        Console.WriteLine("listaContraseñas:");
-        foreach (var texto in listaContraseñas)
-        {
-            Console.WriteLine(texto);
-        }
+        TimeSpan tiempoTranscurrido = stopwatch.Elapsed;
 
-        Console.WriteLine("\nLista de hashes SHA-256:");
-        foreach (var hash in listaHashesSHA256)
-        {
-            Console.WriteLine(hash);
-        }
-        */
+        // Mostrar el tiempo que tardó el hilo en ejecutarse
+        Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} tardó: {tiempoTranscurrido}");
 
     }
-
 }
