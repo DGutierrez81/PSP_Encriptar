@@ -60,6 +60,10 @@ class Program
                 threads[i] = new Thread(() => ComprobarContrasenia(inicio, division, contra, listaContraseñas));
                 threads[i].Start();
             }
+            foreach (Thread thread in threads)
+            {
+                thread.Join();
+            }
 
             /*
             int parte2 = division * 2;
