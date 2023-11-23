@@ -10,8 +10,19 @@ using System.Threading;
 
 class Program
 {
+    static bool contraseñaEncontrada = false;
     static void Main(string[] args)
     {
+        // Apuntes de clase: 
+
+        // using (StreamWriter escritor = new StreamWriter("Archivoprueba.txt")) ; Se crea un archivo para saber donde esta la ruta del mismo
+        // List<string> allLinesText = File.TeadAllLines("passwords.txt");
+        // foreach(String line in allLinesText) Console.WriteLine(line);
+        // var random = new Random();
+        // var itamRandom = random.Next(allLinesText.Count);
+        // var passordString = allLinesText[itemRandom];
+        // Console.WriteLine(password);
+        
         string archivo = "passwords.txt";
         List<string> listaContraseñas = new List<string>();
         string contra = "";
@@ -138,13 +149,22 @@ class Program
         {
             foreach (string texto in listaContraseñas.GetRange(inicio, final))
             {
+                
+
                 String nuevaEncriptada = EncriptarContraseña(texto);
 
                 if (nuevaEncriptada == contrase)
                 {
+                    contraseñaEncontrada = true;
+                    Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} encotró la contraseña");
                     stopwatch.Stop();
                     Console.WriteLine("La contraseña es: " + texto);
                     break;
+                }
+
+                if (contraseñaEncontrada)
+                {
+                    break; // Sale del bucle al encontrar la contraseña
                 }
             }
 
