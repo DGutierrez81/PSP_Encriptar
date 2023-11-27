@@ -10,6 +10,7 @@ using System.Threading;
 
 class Program
 {
+    static bool cortar = false;
     static bool contraseñaEncontrada = false;
     static void Main(string[] args)
     {
@@ -69,13 +70,19 @@ class Program
             {
                 int inicio = i * division;
                 threads[i] = new Thread(() => ComprobarContrasenia(inicio, division, contra, listaContraseñas));
+                if (cortar) break;
                 threads[i].Start();
+                threads[i].Join();
             }
+
+            
+            // Hace que el hilo actual espere que se ejecute cada hilo en la colección.
+            /*
             foreach (Thread thread in threads)
             {
                 thread.Join();
             }
-
+            */
             /*
             int parte2 = division * 2;
             int parte3 = division * 3;
@@ -141,32 +148,40 @@ class Program
     static void ComprobarContrasenia(int inicio, int final, string contrase, List<string> listaContraseñas)
 
     {
+        object objeto = new object();
         Stopwatch stopwatch = new Stopwatch();
         List<string> listaHashesSHA256 = new List<string>();
 
         stopwatch.Start();
         using (SHA256 sha256 = SHA256.Create())
         {
-            foreach (string texto in listaContraseñas.GetRange(inicio, final))
-            {
-                
-
-                String nuevaEncriptada = EncriptarContraseña(texto);
-
-                if (nuevaEncriptada == contrase)
+            
+                foreach (string texto in listaContraseñas.GetRange(inicio, final))
                 {
-                    contraseñaEncontrada = true;
-                    Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} encotró la contraseña");
-                    stopwatch.Stop();
-                    Console.WriteLine("La contraseña es: " + texto);
-                    break;
-                }
 
-                if (contraseñaEncontrada)
-                {
-                    break; // Sale del bucle al encontrar la contraseña
+                    lock (objeto)
+                    {
+                        String nuevaEncriptada = EncriptarContraseña(texto);
+
+
+                        if (nuevaEncriptada == contrase)
+                        {
+                            contraseñaEncontrada = true;
+                            Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} encotró la contraseña");
+                            stopwatch.Stop();
+                            Console.WriteLine("La contraseña es: " + texto);
+                            cortar = true;
+                            break;
+                        }
+
+                        if (contraseñaEncontrada)
+                        {
+                            break; // Sale del bucle al encontrar la contraseña
+                        }
+                    }
                 }
-            }
+            
+            
 
         }
 
