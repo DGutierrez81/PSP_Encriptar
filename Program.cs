@@ -14,58 +14,36 @@ class Program
     static bool contraseñaEncontrada = false;
     static void Main(string[] args)
     {
-        // Apuntes de clase: 
-
-        // using (StreamWriter escritor = new StreamWriter("Archivoprueba.txt")) ; Se crea un archivo para saber donde esta la ruta del mismo
-        // List<string> allLinesText = File.TeadAllLines("passwords.txt");
-        // foreach(String line in allLinesText) Console.WriteLine(line);
-        // var random = new Random();
-        // var itamRandom = random.Next(allLinesText.Count);
-        // var passordString = allLinesText[itemRandom];
-        // Console.WriteLine(password);
-        
         string archivo = "passwords.txt";
         List<string> listaContraseñas = new List<string>();
         string contra = "";
-        
 
         try
         {
-           
-            using StreamReader lector = new StreamReader(archivo);
+            // Lee todo el contenido del archivo a la vez
+            string[] lines = File.ReadAllLines(archivo);
+            listaContraseñas.AddRange(lines);
 
-
-            // Lee el contenido del archivo línea por línea
-            string linea;
-
-            while ((linea = lector.ReadLine()) != null)
-            {
-                listaContraseñas.Add(linea);
-            }
-           
             Console.WriteLine(listaContraseñas.Count);
 
-            if(listaContraseñas.Count > 0)
+            if (listaContraseñas.Count > 0)
             {
                 Random random = new Random();
-
                 int indice = random.Next(0, listaContraseñas.Count);
-
                 string contraseniaAleatoria = listaContraseñas[indice];
 
                 Console.WriteLine(contraseniaAleatoria);
 
-                EncriptarContraseña(contraseniaAleatoria);
-
                 contra = EncriptarContraseña(contraseniaAleatoria);
             }
-            else {
-                Console.WriteLine("El archivo está vacio."); 
+            else
+            {
+                Console.WriteLine("El archivo está vacío.");
             }
 
             int division = listaContraseñas.Count / 10;
-
             Thread[] threads = new Thread[10];
+
             for (int i = 0; i < 10; i++)
             {
                 int inicio = i * division;
@@ -75,45 +53,6 @@ class Program
                 threads[i].Join();
             }
 
-            
-            // Hace que el hilo actual espere que se ejecute cada hilo en la colección.
-            /*
-            foreach (Thread thread in threads)
-            {
-                thread.Join();
-            }
-            */
-            /*
-            int parte2 = division * 2;
-            int parte3 = division * 3;
-            int parte4 = division * 4;
-            int parte5 = division * 5;
-            int parte6 = division * 6;
-            int parte7 = division * 7;
-            int parte8 = division * 8;
-            int parte9 = division * 9;
-
-            Thread t1 = new Thread(() => ComprobarContrasenia(0, division, contra, listaContraseñas));
-            t1.Start();
-            Thread t2 = new Thread(() => ComprobarContrasenia(division, division, contra, listaContraseñas));
-            t2.Start();
-            Thread t3 = new Thread(() => ComprobarContrasenia(parte2, division, contra, listaContraseñas));
-            t3.Start();
-            Thread t4 = new Thread(() => ComprobarContrasenia(parte3, division, contra, listaContraseñas));
-            t4.Start();
-            Thread t5 = new Thread(() => ComprobarContrasenia(parte4, division, contra, listaContraseñas));
-            t5.Start();
-            Thread t6 = new Thread(() => ComprobarContrasenia(parte5, division, contra, listaContraseñas));
-            t6.Start();
-            Thread t7 = new Thread(() => ComprobarContrasenia(parte6, division, contra, listaContraseñas));
-            t7.Start();
-            Thread t8 = new Thread(() => ComprobarContrasenia(parte7, division, contra, listaContraseñas));
-            t8.Start();
-            Thread t9 = new Thread(() => ComprobarContrasenia(parte8, division, contra, listaContraseñas));
-            t9.Start();
-            Thread t10 = new Thread(() => ComprobarContrasenia(parte9, division, contra, listaContraseñas));
-            t10.Start();
-            */
 
         }
         catch (IOException ex)
@@ -192,3 +131,56 @@ class Program
 
     }
 }
+
+
+
+// Apuntes de clase: 
+
+// using (StreamWriter escritor = new StreamWriter("Archivoprueba.txt")) ; Se crea un archivo para saber donde esta la ruta del mismo
+// List<string> allLinesText = File.TeadAllLines("passwords.txt");
+// foreach(String line in allLinesText) Console.WriteLine(line);
+// var random = new Random();
+// var itamRandom = random.Next(allLinesText.Count);
+// var passordString = allLinesText[itemRandom];
+// Console.WriteLine(password);
+
+
+
+// Hace que el hilo actual espere que se ejecute cada hilo en la colección.
+/*
+foreach (Thread thread in threads)
+{
+    thread.Join();
+}
+*/
+/*
+int parte2 = division * 2;
+int parte3 = division * 3;
+int parte4 = division * 4;
+int parte5 = division * 5;
+int parte6 = division * 6;
+int parte7 = division * 7;
+int parte8 = division * 8;
+int parte9 = division * 9;
+
+Thread t1 = new Thread(() => ComprobarContrasenia(0, division, contra, listaContraseñas));
+t1.Start();
+Thread t2 = new Thread(() => ComprobarContrasenia(division, division, contra, listaContraseñas));
+t2.Start();
+Thread t3 = new Thread(() => ComprobarContrasenia(parte2, division, contra, listaContraseñas));
+t3.Start();
+Thread t4 = new Thread(() => ComprobarContrasenia(parte3, division, contra, listaContraseñas));
+t4.Start();
+Thread t5 = new Thread(() => ComprobarContrasenia(parte4, division, contra, listaContraseñas));
+t5.Start();
+Thread t6 = new Thread(() => ComprobarContrasenia(parte5, division, contra, listaContraseñas));
+t6.Start();
+Thread t7 = new Thread(() => ComprobarContrasenia(parte6, division, contra, listaContraseñas));
+t7.Start();
+Thread t8 = new Thread(() => ComprobarContrasenia(parte7, division, contra, listaContraseñas));
+t8.Start();
+Thread t9 = new Thread(() => ComprobarContrasenia(parte8, division, contra, listaContraseñas));
+t9.Start();
+Thread t10 = new Thread(() => ComprobarContrasenia(parte9, division, contra, listaContraseñas));
+t10.Start();
+*/
