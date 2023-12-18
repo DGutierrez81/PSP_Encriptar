@@ -1,8 +1,6 @@
 ﻿
-// See https://aka.ms/new-console-template for more information
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 using System.Diagnostics;
@@ -15,21 +13,20 @@ class Program
     static void Main(string[] args)
     {
         string archivo = "passwords.txt";
-        List<string> listaContraseñas = new List<string>();
+        string[] listaContraseñas;
         string contra = "";
 
         try
         {
             // Lee todo el contenido del archivo a la vez
-            string[] lines = File.ReadAllLines(archivo);
-            listaContraseñas.AddRange(lines);
+            listaContraseñas = File.ReadAllLines(archivo);
 
-            Console.WriteLine(listaContraseñas.Count);
+            Console.WriteLine(listaContraseñas.Length);
 
-            if (listaContraseñas.Count > 0)
+            if (listaContraseñas.Length > 0)
             {
                 Random random = new Random();
-                int indice = random.Next(0, listaContraseñas.Count);
+                int indice = random.Next(0, listaContraseñas.Length);
                 string contraseniaAleatoria = listaContraseñas[indice];
 
                 Console.WriteLine(contraseniaAleatoria);
@@ -41,7 +38,7 @@ class Program
                 Console.WriteLine("El archivo está vacío.");
             }
 
-            int division = listaContraseñas.Count / 10;
+            int division = listaContraseñas.Length / 10;
             Thread[] threads = new Thread[10];
 
             for (int i = 0; i < 10; i++)
@@ -52,8 +49,6 @@ class Program
                 threads[i].Start();
                 threads[i].Join();
             }
-
-
         }
         catch (IOException ex)
         {
@@ -62,7 +57,6 @@ class Program
 
         Console.ReadLine(); // Para mantener la consola abierta
     }
-
 
     static string EncriptarContraseña(string contraseña)
     {
@@ -83,52 +77,42 @@ class Program
         }
     }
 
-
-    static void ComprobarContrasenia(int inicio, int final, string contrase, List<string> listaContraseñas)
-
+    static void ComprobarContrasenia(int inicio, int final, string contrase, string[] listaContraseñas)
     {
         object objeto = new object();
         Stopwatch stopwatch = new Stopwatch();
-        List<string> listaHashesSHA256 = new List<string>();
 
         stopwatch.Start();
         using (SHA256 sha256 = SHA256.Create())
         {
-            
-                foreach (string texto in listaContraseñas.GetRange(inicio, final))
+            for (int i = inicio; i < inicio + final; i++)
+            {
+                lock (objeto)
                 {
+                    String nuevaEncriptada = EncriptarContraseña(listaContraseñas[i]);
 
-                    lock (objeto)
+                    if (nuevaEncriptada == contrase)
                     {
-                        String nuevaEncriptada = EncriptarContraseña(texto);
+                        contraseñaEncontrada = true;
+                        Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} encontró la contraseña");
+                        stopwatch.Stop();
+                        Console.WriteLine("La contraseña es: " + listaContraseñas[i]);
+                        cortar = true;
+                        break;
+                    }
 
-
-                        if (nuevaEncriptada == contrase)
-                        {
-                            contraseñaEncontrada = true;
-                            Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} encotró la contraseña");
-                            stopwatch.Stop();
-                            Console.WriteLine("La contraseña es: " + texto);
-                            cortar = true;
-                            break;
-                        }
-
-                        if (contraseñaEncontrada)
-                        {
-                            break; // Sale del bucle al encontrar la contraseña
-                        }
+                    if (contraseñaEncontrada)
+                    {
+                        break; // Sale del bucle al encontrar la contraseña
                     }
                 }
-            
-            
-
+            }
         }
 
         TimeSpan tiempoTranscurrido = stopwatch.Elapsed;
 
         // Mostrar el tiempo que tardó el hilo en ejecutarse
         Console.WriteLine($"El hilo {Thread.CurrentThread.ManagedThreadId} tardó: {tiempoTranscurrido}");
-
     }
 }
 
